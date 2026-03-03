@@ -3,6 +3,7 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import Navbar from "./components/Navbar";
+import PostCard from "./components/PostCard";
 
 const POSTS = [
   {
@@ -37,6 +38,8 @@ function App() {
   return (
     <div>
       <Navbar />
+
+      <PostCard title="ทดสอบโพสต์" body="นี่คือเนื้อหาทดสอบของ PostCard" />
     </div>
   );
 }
