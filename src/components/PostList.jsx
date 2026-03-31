@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import PostCard from "./PostCard";
+import PostCount from "./PostCount";
 import LoadingSpinner from "./LoadingSpinner";
 
 function PostList() {
@@ -8,23 +9,24 @@ function PostList() {
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    async function fetchPosts() {
-      try {
-        setLoading(true);
-        setError(null);
-        const res = await fetch("https://jsonplaceholder.typicode.com/posts");
-        if (!res.ok) throw new Error("ดึงข้อมูลไม่สำเร็จ");
-        const data = await res.json();
-        setPosts(data.slice(0, 20)); // เอาแค่ 20 รายการแรก
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+  async function fetchPosts() {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+      if (!res.ok) throw new Error("ดึงข้อมูลไม่สำเร็จ");
+      const data = await res.json();
+      setPosts(data.slice(0, 20));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
+  }
+
+  useEffect(() => {
     fetchPosts();
-  }, []); // [] = ทำครั้งเดียวตอน component mount
+  }, []);
 
   const filtered = posts.filter((post) =>
     post.title.toLowerCase().includes(search.toLowerCase()),
@@ -49,15 +51,38 @@ function PostList() {
 
   return (
     <div>
-      <h2
+      <div
         style={{
-          color: "#2d3748",
-          borderBottom: "2px solid #1e40af",
-          paddingBottom: "0.5rem",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        โพสต์ล่าสุด
-      </h2>
+        <h2
+          style={{
+            color: "#2d3748",
+            borderBottom: "2px solid #1e40af",
+            paddingBottom: "0.5rem",
+          }}
+        >
+          โพสต์ล่าสุด
+          <PostCount count={posts.length} />
+        </h2>
+        <button
+          onClick={fetchPosts}
+          style={{
+            background: "none",
+            border: "1px solid #cbd5e0",
+            borderRadius: "6px",
+            padding: "0.25rem 0.75rem",
+            cursor: "pointer",
+            color: "#4a5568",
+            fontSize: "0.9rem",
+          }}
+        >
+          🔄 โหลดใหม่
+        </button>
+      </div>
 
       <input
         type="text"
